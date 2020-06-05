@@ -52,7 +52,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   const p = new Person({
@@ -81,6 +81,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError' && error.kind == 'ObjectId') {
     return response.status(400).send({ error: 'vääränmuotoinen id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({error: error.message})
   } 
 
   next(error)
